@@ -61,7 +61,7 @@
                     <sources>
                         <source>src/main/resources/schemas/invoice.xsd</source>
                     </sources>
-                    <outputDirectory>${basedir}/src/main/generated</outputDirectory>
+                    <outputDirectory>src/main/com.dp.test/generated</outputDirectory>
                 </configuration>
             </plugin>
 		</plugins>
