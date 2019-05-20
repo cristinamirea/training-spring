@@ -1,14 +1,19 @@
 package com.train.controller;
 
+import com.train.entity.Invoice;
+import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.Exchange;
 import org.apache.camel.Headers;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+
+import static org.hibernate.validator.internal.util.Contracts.assertTrue;
 
 @Component
 public class MyCamelRouter extends RouteBuilder {
@@ -57,39 +62,37 @@ public class MyCamelRouter extends RouteBuilder {
 //                .to("file:////Users/user/Documents/testeCamel/camel2");
 //
 //    }
-        from("file:////Users/user/Documents/testeCamel/camel?delay=1000&antInclude=*.txt&recursive=true")
-//                .choice()
-//                .when(header("text3.xml").endsWith(".xml"))
+//        @Autowired
+//        public ConsumerTemplate consumerTemplate;
+
+        from("file:///Users/user/Documents/testeCamel/camel?delay=1000&antInclude=*.txt&recursive=true")
                 .process(new FileProcessor() {
 
-                    // vaianta andrei
-//                             @Override
-//                             public void process(Exchange exchange) throws Exception {
+                             // vaianta andrei
+                             @Override
+                             public void process(Exchange exchange) throws Exception {
 //                                 exchange.getIn().getBody(File.class);
-//
-//                                 String nume = exchange.getIn().getHeader(Exchange.FILE_NAME_ONLY,String.class);
-//                                 nume= nume.replace(".txt",".csv");
-//                                 exchange.getIn().setHeader(Exchange.FILE_NAME_ONLY,nume);
+
+                                 String nume = exchange.getIn().getHeader(Exchange.FILE_NAME_ONLY, String.class);
+                                 nume = nume.replace(".txt", ".csv");
+                                 exchange.getIn().setHeader(Exchange.FILE_NAME_ONLY, nume);
+//                                 Invoice invoice = consumerTemplate.receiveBody("jms:invoices", Invoice.class);
+                                 byte[] body = exchange.getIn().getBody(byte[].class);
+                                 exchange.getOut().setBody(("am modificat bodyul" + new String(body)).getBytes());
 
 
-                                 // incercare varianta unu
-
-//                                 String extension = nume.split(".")[0];
-//                                 String extension = nume.substring(0, nume.lastIndexOf('.'));
-//                                 extension = "csv";
-//                                nume = nume.concat("_C");
-//                                nume = nume.concat(extension);
+//                                 String body2 = exchange.getOut().getBody(String.class);
+//                                 assertTrue(body2.endsWith("<goodbye>world!</goodbye>"));
 
                              }
-//                         }
 
-                ).to("file:////Users/user/Documents/testeCamel/camel2");
-//                .otherwise()
-//                .to("file:////Users/user/Documents/testeCamel/camel")
-//                . endChoice();
+                         }
 
 
-                }
+                ).to("file:///Users/user/Documents/testeCamel/camel2");
+
+
     }
+}
 
 
